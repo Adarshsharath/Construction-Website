@@ -3,7 +3,8 @@ from flask import Flask, send_from_directory, jsonify
 from flask_cors import CORS
 from flask_jwt_extended import JWTManager
 from config import Config
-from database import init_db
+from database import get_db, init_db
+from bootstrap import ensure_database_ready
 from routes import register_blueprints
 
 def create_app():
@@ -20,7 +21,8 @@ def create_app():
     
     # Verify and initialize Database connection
     try:
-        init_db()
+        db = init_db()
+        ensure_database_ready(db)
     except Exception as e:
         print(f"Warning: Database failed to initialize on startup ({e}). Will attempt lazy loading.")
 
@@ -38,10 +40,21 @@ def create_app():
     # Base check endpoint
     @app.route("/health", methods=["GET"])
     def health_check():
+        database = {"status": "connected"}
+        status_code = 200
+        try:
+            db = get_db()
+            db.client.admin.command("ping")
+            database["name"] = db.name
+        except Exception as e:
+            database = {"status": "unavailable", "error": str(e)}
+            status_code = 503
+
         return jsonify({
-            "status": "healthy",
-            "message": "Flask REST API for Construction Website is running"
-        }), 200
+            "status": "healthy" if status_code == 200 else "degraded",
+            "message": "Flask REST API for Construction Website is running",
+            "database": database
+        }), status_code
         
     # Global HTTP error handler
     @app.errorhandler(404)
@@ -59,4 +72,3 @@ app = create_app()
 if __name__ == "__main__":
     print(f"Starting server on port {Config.PORT}...")
     app.run(host="0.0.0.0", port=Config.PORT, debug=True)
-

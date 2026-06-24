@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { MapPin, Calendar, ArrowRight } from "lucide-react";
+import { getMediaUrl } from "../services/api";
 
 const ProjectCard = ({ project = {} }) => {
   const { _id, title, thumbnail, location, year } = project;
@@ -10,7 +11,7 @@ const ProjectCard = ({ project = {} }) => {
       {/* Image Wrapper */}
       <div className="relative overflow-hidden aspect-[4/3] bg-brand-grayBg">
         <img
-          src={thumbnail}
+          src={getMediaUrl(thumbnail)}
           alt={title}
           loading="lazy"
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500 ease-out"

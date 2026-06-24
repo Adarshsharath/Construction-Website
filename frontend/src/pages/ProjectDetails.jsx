@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, Link } from "react-router-dom";
 import { MapPin, Calendar, ArrowLeft, Maximize2 } from "lucide-react";
-import api from "../services/api";
+import api, { getMediaUrl } from "../services/api";
 import Spinner from "../components/UI/Spinner";
 import Lightbox from "../components/Lightbox";
 
@@ -54,7 +54,7 @@ const ProjectDetails = () => {
   }
 
   // Create list of all images (thumbnail + gallery list)
-  const allImages = [project.thumbnail, ...(project.gallery || [])].filter(Boolean);
+  const allImages = [project.thumbnail, ...(project.gallery || [])].filter(Boolean).map(getMediaUrl);
 
   const openLightbox = (index) => {
     setLightboxIndex(index);
@@ -113,7 +113,7 @@ const ProjectDetails = () => {
             onClick={() => openLightbox(0)}
           >
             <img
-              src={project.thumbnail}
+              src={getMediaUrl(project.thumbnail)}
               alt={project.title}
               className="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500"
             />

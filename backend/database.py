@@ -1,6 +1,5 @@
 from pymongo import MongoClient
 from config import Config
-import sys
 
 client = None
 db = None
@@ -13,9 +12,7 @@ def init_db():
         # The ping command is cheap and does not require auth
         client.admin.command('ping')
         
-        # Extract database name from connection string, or fallback to 'construction_db'
-        # pymongo's get_database() without args defaults to the one specified in the URI
-        db = client.get_database()
+        db = client.get_default_database(default=Config.MONGO_DB_NAME)
         print(f"Connected to MongoDB database: '{db.name}' successfully.")
         return db
     except Exception as e:
@@ -27,12 +24,7 @@ def init_db():
 def get_db():
     global db
     if db is None:
-        try:
-            db = init_db()
-        except Exception:
-            # Fallback local connection if ping failed but server is still trying to boot
-            client = MongoClient(Config.MONGO_URI)
-            db = client.get_database("construction_db")
+        db = init_db()
     return db
 
 def serialize_doc(doc):
@@ -46,4 +38,3 @@ def serialize_doc(doc):
 def serialize_docs(docs):
     """Serialize a list of MongoDB documents."""
     return [serialize_doc(doc) for doc in docs]
-

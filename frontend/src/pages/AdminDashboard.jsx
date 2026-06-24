@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { useAuth } from "../context/AuthContext";
 import { LogOut, LayoutDashboard, FolderKanban, MailOpen, Settings as SettingsIcon, Plus, Pencil, Trash2, Check, CheckCircle2, Trash, X, Calendar, MapPin, Eye } from "lucide-react";
 import logo from "../assets/logo.png";
-import api from "../services/api";
+import api, { getMediaUrl } from "../services/api";
 import Spinner from "../components/UI/Spinner";
 import Input from "../components/UI/Input";
 import TextArea from "../components/UI/TextArea";
@@ -528,7 +528,7 @@ const AdminDashboard = ({ settings = {}, onRefreshSettings }) => {
                     {projects.map((proj) => (
                       <div key={proj._id} className="bg-white border border-brand-dark/5 rounded-xl overflow-hidden shadow-xs flex flex-col justify-between h-full">
                         <div className="aspect-[4/3] bg-brand-grayBg overflow-hidden relative">
-                          <img src={proj.thumbnail} alt={proj.title} className="w-full h-full object-cover" />
+                          <img src={getMediaUrl(proj.thumbnail)} alt={proj.title} className="w-full h-full object-cover" />
                         </div>
                         <div className="p-5 flex flex-col gap-4 flex-grow">
                           <div className="flex flex-col gap-1">
@@ -633,7 +633,7 @@ const AdminDashboard = ({ settings = {}, onRefreshSettings }) => {
                       />
                       {thumbnailPreview && (
                         <div className="relative w-36 aspect-[4/3] rounded-lg border border-brand-dark/5 overflow-hidden">
-                          <img src={thumbnailPreview} alt="Thumbnail preview" className="w-full h-full object-cover" />
+                          <img src={getMediaUrl(thumbnailPreview)} alt="Thumbnail preview" className="w-full h-full object-cover" />
                         </div>
                       )}
                     </div>
@@ -681,7 +681,7 @@ const AdminDashboard = ({ settings = {}, onRefreshSettings }) => {
                         <div className="grid grid-cols-2 sm:grid-cols-6 gap-3">
                           {existingGallery.map((imgUrl, idx) => (
                             <div key={idx} className="relative aspect-[4/3] rounded-lg border border-brand-dark/5 overflow-hidden group">
-                              <img src={imgUrl} alt={`Existing view ${idx}`} className="w-full h-full object-cover" />
+                              <img src={getMediaUrl(imgUrl)} alt={`Existing view ${idx}`} className="w-full h-full object-cover" />
                               <button
                                 type="button"
                                 onClick={() => removeExistingGalleryImage(imgUrl)}

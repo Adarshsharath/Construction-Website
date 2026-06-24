@@ -53,6 +53,7 @@ Render hosts backends and serves them. We will deploy the Flask API here.
 4. **Configure Environment Variables**:
    - Click the **Advanced** tab and add the following Environment Variables:
      - `MONGO_URI`: The MongoDB Atlas connection string from Part 1 (with `<password>` replaced and database specified, e.g. `...mongodb.net/construction_db?retryWrites=...`).
+     - `MONGO_DB_NAME`: `construction_db` *(optional if the database name is already included in `MONGO_URI`)*.
      - `JWT_SECRET_KEY`: A long, unique, secure random string.
      - `ADMIN_USERNAME`: Define the admin portal login username (e.g., `admin`).
      - `ADMIN_PASSWORD`: Define the admin portal login password (e.g., `securePassword123`).
@@ -67,28 +68,10 @@ Render hosts backends and serves them. We will deploy the Flask API here.
 
 Vercel hosts static pages and SPAs. We will deploy the React + Vite frontend here.
 
-1. **Vercel rewrite configuration**:
-   - Open [frontend/vercel.json](file:///d:/Construction%20website/frontend/vercel.json) in your repository.
-   - Replace the `destination` URLs with your actual Render backend URL:
-     ```json
-     {
-       "rewrites": [
-         {
-           "source": "/api/:path*",
-           "destination": "https://novabuild-backend.onrender.com/api/:path*"
-         },
-         {
-           "source": "/uploads/:path*",
-           "destination": "https://novabuild-backend.onrender.com/uploads/:path*"
-         },
-         {
-           "source": "/(.*)",
-           "destination": "/index.html"
-         }
-       ]
-     }
-     ```
-     *(This ensures the production frontend redirects requests correctly to your Render API server without CORS issues)*
+1. **Configure the backend URL**:
+   - In your Vercel project settings, add this Environment Variable:
+     - `VITE_API_BASE_URL`: Your Render backend URL, for example `https://novabuild-backend.onrender.com`.
+   - Redeploy the frontend after adding it. The frontend uses this value for both API requests and uploaded project images.
 2. **Deploy on Vercel Dashboard**:
    - Go to [vercel.com](https://vercel.com) and log in.
    - Click **Add New** -> **Project**.
